@@ -70,13 +70,13 @@ class GameEngine:
             level_data = json.load(f)
 
         # 📌 Inicializar sistemas ECS
-        self.enemy_spawner = SystemEnemySpawner(level_data, self.entities)
+        self.enemy_spawner = SystemEnemySpawner(level_data.get("enemies", []), self.entities)
         self.system_movement = SystemMovement(self.entities, self.width, self.height)
         self.system_render = SystemRender(self.screen, self.entities)
 
     def _calculate_time(self):
         """Control del tiempo de actualización."""
-        self.clock.tick(self.fps)
+        self.delta_time = self.clock.tick(self.fps) / 1000.0  # Convertir a segundos
 
     def _process_events(self):
         """Manejo de eventos de entrada."""
@@ -86,14 +86,18 @@ class GameEngine:
 
     def _update(self):
         """Actualizar lógica del juego."""
-        delta_time = 1 / self.fps  # 📌 Calcular el tiempo entre frames
-        self.enemy_spawner.update(delta_time)
-        self.system_movement.update(delta_time)
+        self.enemy_spawner.update(self.delta_time)
+        self.system_movement.update(self.delta_time)
 
     def _draw(self):
         """Dibuja en la pantalla."""
         self.screen.fill(self.bg_color)
-        self.system_render.render()  # 📌 Dibujar enemigos
+
+        # 📌 Dibujar enemigos usando el método `draw()`
+        for entity in self.entities:
+            if hasattr(entity, "draw"):
+                entity.draw(self.screen)
+
         pygame.display.flip()
 
     def _clean(self):
