@@ -1,16 +1,13 @@
+# src/ecs/systems/system_render.py
 import pygame
+from src.ecs.components.CPosition import CPosition
+from src.ecs.components.CColor import CColor
+from src.ecs.components.CRect import CRect
 
-class SystemRender:
-    def __init__(self, screen, entities: list):
-        self.screen = screen
-        self.entities = entities
-
-    def render(self):
-        """Dibuja los enemigos en la pantalla."""
-        for entity in self.entities:
-            if hasattr(entity, "rect"):
-                pygame.draw.rect(
-                    self.screen,
-                    entity.color,
-                    entity.rect  # 📌 Se usa `entity.rect` en lugar de `entity.x, entity.y`
-                )
+def system_render(entities, screen):
+    for e in entities:
+        pos = e.get(CPosition)
+        color = e.get(CColor)
+        rect = e.get(CRect)
+        if pos and color and rect:
+            pygame.draw.rect(screen, (color.r, color.g, color.b), pygame.Rect(pos.x, pos.y, rect.w, rect.h))
