@@ -1,18 +1,40 @@
 {
   "enemies": [
     {
-      "spawn_time": 2,
-      "size": {"w": 30, "h": 30},
-      "speed": {"x": 2, "y": 3},
-      "color": {"r": 255, "g": 0, "b": 0},
-      "respawn": true
+      "x": 100,
+      "y": 150,
+      "speed": {
+        "x": 50,
+        "y": 0
+      },
+      "size": {
+        "w": 32,
+        "h": 32
+      },
+      "color": {
+        "r": 255,
+        "g": 0,
+        "b": 0
+      },
+      "spawn_time": 1.0
     },
     {
-      "spawn_time": 5,
-      "size": {"w": 40, "h": 40},
-      "speed": {"x": -2, "y": 1},
-      "color": {"r": 0, "g": 255, "b": 0},
-      "respawn": true
+      "x": 300,
+      "y": 200,
+      "speed": {
+        "x": -30,
+        "y": 0
+      },
+      "size": {
+        "w": 32,
+        "h": 32
+      },
+      "color": {
+        "r": 0,
+        "g": 255,
+        "b": 0
+      },
+      "spawn_time": 3.0
     }
   ]
 }

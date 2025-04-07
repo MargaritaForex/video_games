@@ -56,9 +56,11 @@ class GameEngine:
         with open(level_path, "r") as f:
             level_data = json.load(f)["enemies"]
 
-        # Crear entidad spawner y agregarla a la lista
-        spawner_entity = create_enemy_spawner(level_data)
-        self.entities.append(spawner_entity)
+        # Crear entidad spawner correctamente usando el motor ECS
+        spawner_entity = self.create_entity()
+        components = create_enemy_spawner(level_data)
+        for c_type, component in components.items():
+            self.add_component(spawner_entity, component)
 
     def _calculate_time(self):
         """Actualiza delta_time en segundos."""
@@ -71,8 +73,7 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-        """Actualiza sistemas ECS."""
-        system_enemy_spawner(self.entities, self.delta_time)
+        system_enemy_spawner(self, self.delta_time)
         system_movement(self.entities, self.width, self.height, self.delta_time)
 
     def _render(self):
@@ -84,3 +85,21 @@ class GameEngine:
     def _clean(self):
         """Cierra Pygame."""
         pygame.quit()
+
+    def create_entity(self):
+        entity = len(self.entities)
+        self.entities.append({})
+        return entity
+
+    def add_component(self, entity, component):
+        self.entities[entity][type(component)] = component
+
+    def get_component(self, entity, component_type):
+        return self.entities[entity].get(component_type)
+
+    def get_entities_with_components(self, *component_types):
+        result = []
+        for i, e in enumerate(self.entities):
+            if all(ct in e for ct in component_types):
+                result.append(i)
+        return result
