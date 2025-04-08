@@ -1,4 +1,5 @@
 # src/ecs/entities/factory.py
+from src.ecs.components.CBullet import CBullet
 from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CVelocity import CVelocity
 from src.ecs.components.CRect import CRect
@@ -44,3 +45,13 @@ def create_player(world, pos, vel, size, color):
     world.add_component(entity, CRect(size["x"], size["y"]))
     world.add_component(entity, CColor(color["r"], color["g"], color["b"]))
     return entity
+
+
+def create_bullet(world, pos: CPosition, cfg: dict):
+    bullet = world.create_entity()
+    world.add_component(bullet, CPosition(pos.x, pos.y))
+    world.add_component(bullet, CVelocity(0, -cfg["velocity"]))  # hacia arriba
+    world.add_component(bullet, CColor(cfg["color"]["r"], cfg["color"]["g"], cfg["color"]["b"]))
+    world.add_component(bullet, CRect(cfg["size"]["x"], cfg["size"]["y"]))
+    world.add_component(bullet, CBullet())  # puedes ajustar si quieres daño
+    return bullet
