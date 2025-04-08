@@ -9,8 +9,8 @@ def system_movement(entities, screen_w, screen_h, delta_time):
         vel = e.get(CVelocity)
         rect = e.get(CRect)
         if pos and vel and rect:
-            pos.x += vel.vx
-            pos.y += vel.vy
+            pos.x += vel.vx * delta_time
+            pos.y += vel.vy * delta_time
 
             # Rebote
             if pos.x <= 0 or pos.x + rect.w >= screen_w:

@@ -5,7 +5,7 @@ import pygame
 from src.ecs.systems.system_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.system_movement import system_movement
 from src.ecs.systems.system_render import system_render
-from src.ecs.entities.factory import create_enemy_spawner
+from src.ecs.entities.factory import create_enemy_components, create_player
 
 class GameEngine:
     def __init__(self) -> None:
@@ -32,15 +32,21 @@ class GameEngine:
         self._clean()
 
     def _create(self):
-        """Carga configuración inicial, JSONs y entidades."""
         base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "cfg"))
-        config_path = os.path.join(base_path, "window.json")
-        level_path = os.path.join(base_path, "level_01.json")
 
-        # Cargar configuración de ventana
-        with open(config_path, "r") as f:
-            config = json.load(f)
-        window_cfg = config["window"]
+        # Cargar configuraciones
+        with open(os.path.join(base_path, "window.json"), "r") as f:
+            window_cfg = json.load(f)["window"]
+        with open(os.path.join(base_path, "level_01.json"), "r") as f:
+            level_cfg = json.load(f)
+        with open(os.path.join(base_path, "player.json"), "r") as f:
+            player_cfg = json.load(f)
+        with open(os.path.join(base_path, "bullet.json"), "r") as f:
+            bullet_cfg = json.load(f)
+        with open(os.path.join(base_path, "enemies.json"), "r") as f:
+            enemies_cfg = json.load(f)
+
+        # Configurar ventana
         self.width = window_cfg["size"]["w"]
         self.height = window_cfg["size"]["h"]
         self.bg_color = (window_cfg["bg_color"]["r"], window_cfg["bg_color"]["g"], window_cfg["bg_color"]["b"])
@@ -52,14 +58,21 @@ class GameEngine:
         pygame.display.set_caption(window_cfg["title"])
         self.clock = pygame.time.Clock()
 
-        # Cargar datos de nivel
-        with open(level_path, "r") as f:
-            level_data = json.load(f)["enemies"]
+        # Crear jugador
+        player_position = level_cfg["player_spawn"]["position"]
+        velocity = {"x": 0, "y": 0}  # Velocidad inicial en cero
+        player_entity = create_player(
+            self,
+            player_position,
+            velocity,
+            player_cfg["size"],
+            player_cfg["color"]
+        )
 
-        # Crear entidad spawner correctamente usando el motor ECS
+        # Crear spawner de enemigos
         spawner_entity = self.create_entity()
-        components = create_enemy_spawner(level_data)
-        for c_type, component in components.items():
+        spawner_components = create_enemy_components(level_cfg["enemy_spawn_events"], enemies_cfg)
+        for c_type, component in spawner_components.items():
             self.add_component(spawner_entity, component)
 
     def _calculate_time(self):
