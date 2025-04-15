@@ -1,13 +1,12 @@
 # src/ecs/systems/system_render.py
 import pygame
 from src.ecs.components.CPosition import CPosition
-from src.ecs.components.CColor import CColor
-from src.ecs.components.CRect import CRect
+from src.ecs.components.CSurface import CSurface
 
-def system_render(entities, screen):
-    for e in entities:
-        pos = e.get(CPosition)
-        color = e.get(CColor)
-        rect = e.get(CRect)
-        if pos and color and rect:
-            pygame.draw.rect(screen, (color.r, color.g, color.b), pygame.Rect(pos.x, pos.y, rect.w, rect.h))
+def system_render(world, screen):
+    for entity_id, components in world.items():
+        pos = components.get(CPosition)
+        surface = components.get(CSurface)
+        
+        if pos and surface:
+            screen.blit(surface.surface, (pos.x, pos.y))

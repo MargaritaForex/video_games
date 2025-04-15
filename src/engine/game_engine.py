@@ -1,6 +1,7 @@
 import os
 import json
 import pygame
+from src.ecs.constants import VELOCITY_X, VELOCITY_Y
 
 from src.ecs.systems.system_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.system_movement import system_movement
@@ -8,7 +9,10 @@ from src.ecs.systems.system_render import system_render
 from src.ecs.systems.system_bullet_spawn import system_bullet_spawn, BulletSpawner
 from src.ecs.systems.system_input import system_input
 from src.ecs.systems.system_collision import system_collision
-from src.ecs.entities.factory import create_enemy_components, create_player
+from src.ecs.systems.system_animation import system_animation
+from src.ecs.systems.system_hunter import system_hunter
+from src.ecs.systems.system_explosion import system_explosion
+from src.ecs.entities.factory import create_enemy_components, create_player, create_hunter
 from src.ecs.components.CHealth import CHealth
 
 class GameEngine:
@@ -24,7 +28,7 @@ class GameEngine:
         self.score = 0
 
         # ECS
-        self.entities = []
+        self.entities = {}  # Cambiado de lista a diccionario
         self.player_entity = None
         self.bullet_cfg = None
         self.bullet_spawner = BulletSpawner()
@@ -69,17 +73,13 @@ class GameEngine:
 
         # Create player
         player_position = level_cfg["player_spawn"]["position"]
-        velocity = {"x": 0, "y": 0}
+        velocity = {VELOCITY_X: 0, VELOCITY_Y: 0}
         self.player_entity = create_player(
             self,
             player_position,
             velocity,
-            player_cfg["size"],
-            player_cfg["color"]
+            player_cfg
         )
-        
-        # Add health component to player
-        self.add_component(self.player_entity, CHealth(3))
 
         # Create enemy spawner
         spawner_entity = self.create_entity()
@@ -96,22 +96,19 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-        # Handle input
-        system_input(self.entities, self.player_entity, self)
+        self.delta_time = self.clock.tick(self.fps) / 1000.0
         
-        # Update game systems
-        system_enemy_spawner(self, self.delta_time)
+        # Actualizar sistemas
+        system_input(self)
         system_movement(self.entities, self.width, self.height, self.delta_time)
-        system_collision(self)
+        system_collision(self.entities)
+        system_animation(self.entities, self.delta_time)
+        system_hunter(self.entities, self.player_entity, self.delta_time)
+        system_explosion(self.entities, self.delta_time)
+        system_enemy_spawner(self, self.delta_time)
         
-        # Handle shooting
-        mouse_pressed = pygame.mouse.get_pressed()
-        system_bullet_spawn(self, mouse_pressed, self.player_entity, self.bullet_cfg)
-        
-        # Check player health
-        player_health = self.get_component(self.player_entity, CHealth)
-        if player_health and player_health.current <= 0:
-            self.is_running = False
+        # Renderizar
+        self._render()
 
     def _render(self):
         self.screen.fill(self.bg_color)
@@ -135,7 +132,7 @@ class GameEngine:
 
     def create_entity(self):
         entity = len(self.entities)
-        self.entities.append({})
+        self.entities[entity] = {}  # Cambiado de append a asignación directa
         return entity
 
     def add_component(self, entity, component):
@@ -146,7 +143,7 @@ class GameEngine:
 
     def get_entities_with_components(self, *component_types):
         result = []
-        for i, e in enumerate(self.entities):
-            if all(ct in e for ct in component_types):
-                result.append(i)
+        for entity_id, components in self.entities.items():
+            if all(ct in components for ct in component_types):
+                result.append(entity_id)
         return result

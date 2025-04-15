@@ -1,19 +1,23 @@
 # src/ecs/systems/system_movement.py
 from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CVelocity import CVelocity
-from src.ecs.components.CRect import CRect
 
-def system_movement(entities, screen_w, screen_h, delta_time):
-    for e in entities:
-        pos = e.get(CPosition)
-        vel = e.get(CVelocity)
-        rect = e.get(CRect)
-        if pos and vel and rect:
+def system_movement(world, screen_width: int, screen_height: int, delta_time: float):
+    for entity_id, components in world.items():
+        pos = components.get(CPosition)
+        vel = components.get(CVelocity)
+        
+        if pos and vel:
             pos.x += vel.vx * delta_time
             pos.y += vel.vy * delta_time
-
-            # Rebote
-            if pos.x <= 0 or pos.x + rect.w >= screen_w:
-                vel.vx *= -1
-            if pos.y <= 0 or pos.y + rect.h >= screen_h:
-                vel.vy *= -1
+            
+            # Mantener la entidad dentro de los límites de la pantalla
+            if pos.x < 0:
+                pos.x = 0
+            elif pos.x > screen_width:
+                pos.x = screen_width
+                
+            if pos.y < 0:
+                pos.y = 0
+            elif pos.y > screen_height:
+                pos.y = screen_height

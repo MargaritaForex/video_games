@@ -1,17 +1,8 @@
 {
-    "size": {
-        "w": 8,
-        "h": 8
-    },
-    "color": {
-        "r": 255,
-        "g": 255,
-        "b": 0
-    },
-    "speed": 500,
+    "image": "bullet.png",
     "velocity": {
-        "x": 0,
-        "y": 0
+        "vx": 0,
+        "vy": -300
     },
     "health": 1
 }

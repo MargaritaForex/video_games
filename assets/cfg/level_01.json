@@ -2,40 +2,48 @@
     "player_spawn": {
         "position": {
             "x": 320,
-            "y": 180
+            "y": 300
         },
         "max_bullets": 4
     },
     "enemy_spawn_events": [
         {
-            "time": 2.0,
+            "time": 0,
             "enemy_type": "TypeA",
             "position": {
-                "x": 50,
+                "x": 100,
                 "y": 50
             }
         },
         {
-            "time": 4.0,
+            "time": 2,
             "enemy_type": "TypeB",
             "position": {
-                "x": 500,
-                "y": 200
+                "x": 200,
+                "y": 50
             }
         },
         {
-            "time": 6.0,
+            "time": 4,
             "enemy_type": "TypeC",
             "position": {
-                "x": 200,
-                "y": 300
+                "x": 300,
+                "y": 50
             }
         },
         {
-            "time": 8.0,
+            "time": 6,
             "enemy_type": "TypeD",
             "position": {
-                "x": 600,
+                "x": 400,
+                "y": 50
+            }
+        },
+        {
+            "time": 8,
+            "enemy_type": "Hunter",
+            "position": {
+                "x": 500,
                 "y": 50
             }
         },

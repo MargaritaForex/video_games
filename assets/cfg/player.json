@@ -8,5 +8,19 @@
         "g": 255,
         "b": 0
     },
-    "input_velocity": 100
+    "input_velocity": 100,
+    "image": "player.png",
+    "num_frames": 4,
+    "animations": {
+        "IDLE": {
+            "start_frame": 0,
+            "end_frame": 0,
+            "framerate": 1
+        },
+        "MOVE": {
+            "start_frame": 0,
+            "end_frame": 3,
+            "framerate": 8
+        }
+    }
 }
