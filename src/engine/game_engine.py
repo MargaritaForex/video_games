@@ -5,8 +5,11 @@ import pygame
 from src.ecs.systems.system_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.system_movement import system_movement
 from src.ecs.systems.system_render import system_render
-from src.ecs.systems.system_bullet_spawn import system_bullet_spawn  # 🆕
+from src.ecs.systems.system_bullet_spawn import system_bullet_spawn, BulletSpawner
+from src.ecs.systems.system_input import system_input
+from src.ecs.systems.system_collision import system_collision
 from src.ecs.entities.factory import create_enemy_components, create_player
+from src.ecs.components.CHealth import CHealth
 
 class GameEngine:
     def __init__(self) -> None:
@@ -18,11 +21,13 @@ class GameEngine:
         self.bg_color = (0, 0, 0)
         self.fps = 60
         self.delta_time = 0.0
+        self.score = 0
 
         # ECS
         self.entities = []
-        self.player_entity = None         # 🆕 guardar entidad del jugador
-        self.bullet_cfg = None           # 🆕 guardar config de balas
+        self.player_entity = None
+        self.bullet_cfg = None
+        self.bullet_spawner = BulletSpawner()
 
     def run(self) -> None:
         self._create()
@@ -44,7 +49,7 @@ class GameEngine:
         with open(os.path.join(base_path, "player.json"), "r") as f:
             player_cfg = json.load(f)
         with open(os.path.join(base_path, "bullet.json"), "r") as f:
-            self.bullet_cfg = json.load(f)  # 🆕 Guardar configuración de balas
+            self.bullet_cfg = json.load(f)
         with open(os.path.join(base_path, "enemies.json"), "r") as f:
             enemies_cfg = json.load(f)
 
@@ -62,7 +67,7 @@ class GameEngine:
         pygame.display.set_caption(window_cfg["title"])
         self.clock = pygame.time.Clock()
 
-        # Crear jugador
+        # Create player
         player_position = level_cfg["player_spawn"]["position"]
         velocity = {"x": 0, "y": 0}
         self.player_entity = create_player(
@@ -72,8 +77,11 @@ class GameEngine:
             player_cfg["size"],
             player_cfg["color"]
         )
+        
+        # Add health component to player
+        self.add_component(self.player_entity, CHealth(3))
 
-        # Crear spawner de enemigos
+        # Create enemy spawner
         spawner_entity = self.create_entity()
         spawner_components = create_enemy_components(level_cfg["enemy_spawn_events"], enemies_cfg)
         for c_type, component in spawner_components.items():
@@ -88,16 +96,38 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
+        # Handle input
+        system_input(self.entities, self.player_entity, self)
+        
+        # Update game systems
         system_enemy_spawner(self, self.delta_time)
         system_movement(self.entities, self.width, self.height, self.delta_time)
-
-        # 🆕 Disparar balas si se presiona el mouse
+        system_collision(self)
+        
+        # Handle shooting
         mouse_pressed = pygame.mouse.get_pressed()
         system_bullet_spawn(self, mouse_pressed, self.player_entity, self.bullet_cfg)
+        
+        # Check player health
+        player_health = self.get_component(self.player_entity, CHealth)
+        if player_health and player_health.current <= 0:
+            self.is_running = False
 
     def _render(self):
         self.screen.fill(self.bg_color)
         system_render(self.entities, self.screen)
+        
+        # Render score
+        font = pygame.font.Font(None, 36)
+        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
+        self.screen.blit(score_text, (10, 10))
+        
+        # Render player health
+        player_health = self.get_component(self.player_entity, CHealth)
+        if player_health:
+            health_text = font.render(f"Health: {player_health.current}", True, (255, 255, 255))
+            self.screen.blit(health_text, (10, 50))
+        
         pygame.display.flip()
 
     def _clean(self):

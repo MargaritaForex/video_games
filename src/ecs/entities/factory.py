@@ -34,24 +34,24 @@ def build_enemy_components(engine, position, enemy_cfg):
     engine.add_component(enemy, CPosition(position["x"], position["y"]))
     engine.add_component(enemy, CColor(color["r"], color["g"], color["b"]))
     engine.add_component(enemy, CVelocity(0, velocity))
-    engine.add_component(enemy, CRect(size["x"], size["y"]))
+    engine.add_component(enemy, CRect(size["w"], size["h"]))
 
     return enemy
 
 def create_player(world, pos, vel, size, color):
     entity = world.create_entity()
-    world.add_component(entity, CPosition(pos["x"], pos["y"]))  # Diccionario {"x": ..., "y": ...}
+    world.add_component(entity, CPosition(pos["x"], pos["y"]))
     world.add_component(entity, CVelocity(vel["x"], vel["y"]))
-    world.add_component(entity, CRect(size["x"], size["y"]))
+    world.add_component(entity, CRect(size["w"], size["h"]))
     world.add_component(entity, CColor(color["r"], color["g"], color["b"]))
     return entity
 
 
 def create_bullet(world, pos: CPosition, cfg: dict):
-    bullet = world.create_entity()
-    world.add_component(bullet, CPosition(pos.x, pos.y))
-    world.add_component(bullet, CVelocity(0, -cfg["velocity"]))  # hacia arriba
-    world.add_component(bullet, CColor(cfg["color"]["r"], cfg["color"]["g"], cfg["color"]["b"]))
-    world.add_component(bullet, CRect(cfg["size"]["x"], cfg["size"]["y"]))
-    world.add_component(bullet, CBullet())  # puedes ajustar si quieres daño
-    return bullet
+    entity = world.create_entity()
+    world.add_component(entity, CPosition(pos.x, pos.y))
+    world.add_component(entity, CVelocity(cfg["velocity"]["x"], cfg["velocity"]["y"]))
+    world.add_component(entity, CRect(cfg["size"]["w"], cfg["size"]["h"]))
+    world.add_component(entity, CColor(cfg["color"]["r"], cfg["color"]["g"], cfg["color"]["b"]))
+    world.add_component(entity, CBullet())
+    return entity
