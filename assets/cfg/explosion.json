@@ -1,5 +1,5 @@
 {
-    "image": "assets/img/explosion.png",
+    "image": "explosion.png",
     "animations": {
         "number_frames": 8,
         "list": [

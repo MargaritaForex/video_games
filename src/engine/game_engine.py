@@ -102,18 +102,19 @@ class GameEngine:
     def _render(self):
         self.screen.fill(self.bg_color)
         system_render(self.entities, self.screen)
-        
+
         # Render score
         font = pygame.font.Font(None, 36)
         score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
         self.screen.blit(score_text, (10, 10))
-        
-        # Render player health
-        player_health = self.get_component(self.player_entity, CHealth)
-        if player_health:
-            health_text = font.render(f"Health: {player_health.current}", True, (255, 255, 255))
-            self.screen.blit(health_text, (10, 50))
-        
+
+        # 🔐 Verifica que el jugador aún exista
+        if self.player_entity in self.entities:
+            player_health = self.get_component(self.player_entity, CHealth)
+            if player_health:
+                health_text = font.render(f"Health: {player_health.current}", True, (255, 255, 255))
+                self.screen.blit(health_text, (10, 50))
+
         pygame.display.flip()
 
     def _clean(self):
