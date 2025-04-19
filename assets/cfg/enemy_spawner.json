@@ -1,0 +1,30 @@
+{
+    "time_to_spawn": 2.0,
+    "spawn_points": [
+        {
+            "time": 5,
+            "position": {"x": 100, "y": 50},
+            "enemy_type": "enemy_a"
+        },
+        {
+            "time": 10,
+            "position": {"x": 540, "y": 50},
+            "enemy_type": "enemy_b"
+        },
+        {
+            "time": 15,
+            "position": {"x": 320, "y": 50},
+            "enemy_type": "enemy_c"
+        },
+        {
+            "time": 20,
+            "position": {"x": 200, "y": 50},
+            "enemy_type": "enemy_d"
+        },
+        {
+            "time": 25,
+            "position": {"x": 400, "y": 50},
+            "enemy_type": "hunter"
+        }
+    ]
+} 

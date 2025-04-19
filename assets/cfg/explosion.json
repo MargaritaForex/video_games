@@ -1,0 +1,7 @@
+{
+    "image": "explosion.png",
+    "animation": {
+        "total_frames": 4,
+        "frame_rate": 8
+    }
+}

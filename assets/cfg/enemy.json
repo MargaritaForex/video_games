@@ -1,0 +1,46 @@
+{
+    "TypeA": {
+        "image": "enemy_a.png",
+        "velocity": {
+            "vx": 0,
+            "vy": 50
+        },
+        "animation": {
+            "total_frames": 4,
+            "frame_rate": 8
+        }
+    },
+    "TypeB": {
+        "image": "enemy_b.png",
+        "velocity": {
+            "vx": 0,
+            "vy": 75
+        },
+        "animation": {
+            "total_frames": 4,
+            "frame_rate": 8
+        }
+    },
+    "TypeC": {
+        "image": "enemy_c.png",
+        "velocity": {
+            "vx": 0,
+            "vy": 100
+        },
+        "animation": {
+            "total_frames": 4,
+            "frame_rate": 8
+        }
+    },
+    "TypeD": {
+        "image": "enemy_d.png",
+        "velocity": {
+            "vx": 0,
+            "vy": 125
+        },
+        "animation": {
+            "total_frames": 4,
+            "frame_rate": 8
+        }
+    }
+} 

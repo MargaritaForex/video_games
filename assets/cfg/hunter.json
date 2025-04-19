@@ -1,0 +1,13 @@
+{
+    "image": "hunter.png",
+    "health": 3,
+    "velocity": {
+        "vx": 0,
+        "vy": 150
+    },
+    "detection_range": 200,
+    "animation": {
+        "total_frames": 4,
+        "frame_rate": 8
+    }
+} 
