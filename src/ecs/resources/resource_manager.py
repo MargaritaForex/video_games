@@ -19,7 +19,7 @@ class ResourceManager:
         print(f"Img exists: {(self.assets_path / 'img').exists()}")
         
     def load_image(self, image_name: str) -> pygame.Surface:
-        path = self.assets_path / "img" / image_name
+        path = self.assets_path / "img" / image_name if "img/" not in image_name else self.assets_path / image_name
         print(f"Trying to load image from: {path}")
         print(f"Image exists: {path.exists()}")
         if not path.exists():
