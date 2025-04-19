@@ -21,13 +21,30 @@ def system_collision(world, prefab_creator: PrefabCreator):
             rect2.y = pos2.y
 
             if rect1.colliderect(rect2):
-                # Crear una explosión visual en el punto medio de la colisión
                 mid_x = (pos1.x + pos2.x) / 2
                 mid_y = (pos1.y + pos2.y) / 2
                 prefab_creator.create_explosion({"x": mid_x, "y": mid_y})
 
-                # Eliminar las dos entidades al colisionar
-                if entity1_id in world:
-                    del world[entity1_id]
-                if entity2_id in world:
-                    del world[entity2_id]
+                engine = prefab_creator._entity_manager
+
+                # Eliminar jugador y respawn
+                def delete_and_respawn_if_player(entity_id):
+                    if entity_id == engine.player_entity:
+                        del world[entity_id]
+                        player_cfg = {
+                            "image": "assets/img/player.png",
+                            "animation": {
+                                "total_frames": 4,
+                                "frame_rate": 10
+                            }
+                        }
+                        engine.player_entity = engine.prefab_creator.create_player(
+                            engine.player_spawn_position,
+                            {"vx": 0, "vy": 0},
+                            player_cfg
+                        )
+                    else:
+                        del world[entity_id]
+
+                delete_and_respawn_if_player(entity1_id)
+                delete_and_respawn_if_player(entity2_id)
