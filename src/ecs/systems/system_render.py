@@ -9,9 +9,6 @@ def system_render(world, screen):
         surface = components.get(CSurface)
 
         if pos and surface:
-            print(f"Renderizando entidad {entity_id} en posición ({pos.x}, {pos.y})")
             screen.blit(surface.surface, (pos.x, pos.y))
-        else:
-            print(f"Entidad {entity_id} sin CPosition o CSurface")
 
 
