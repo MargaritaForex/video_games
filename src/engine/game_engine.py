@@ -12,7 +12,7 @@ from src.ecs.systems.system_collision import system_collision
 from src.ecs.systems.system_animation import system_animation
 from src.ecs.systems.system_hunter import system_hunter
 from src.ecs.systems.system_explosion import system_explosion
-from src.ecs.entities.factory import create_enemy_components, create_player, create_hunter
+from src.create.prefab_creator import PrefabCreator
 from src.ecs.components.CHealth import CHealth
 
 class GameEngine:
@@ -28,10 +28,11 @@ class GameEngine:
         self.score = 0
 
         # ECS
-        self.entities = {}  # Cambiado de lista a diccionario
+        self.entities = {}
         self.player_entity = None
         self.bullet_cfg = None
         self.bullet_spawner = BulletSpawner()
+        self.prefab_creator = PrefabCreator(self)
 
     def run(self) -> None:
         self._create()
@@ -54,8 +55,6 @@ class GameEngine:
             player_cfg = json.load(f)
         with open(os.path.join(base_path, "bullet.json"), "r") as f:
             self.bullet_cfg = json.load(f)
-        with open(os.path.join(base_path, "enemies.json"), "r") as f:
-            enemies_cfg = json.load(f)
 
         self.width = window_cfg["size"]["w"]
         self.height = window_cfg["size"]["h"]
@@ -74,18 +73,10 @@ class GameEngine:
         # Create player
         player_position = level_cfg["player_spawn"]["position"]
         velocity = {VELOCITY_X: 0, VELOCITY_Y: 0}
-        self.player_entity = create_player(
-            self,
-            player_position,
-            velocity,
-            player_cfg
-        )
+        self.player_entity = self.prefab_creator.create_player(player_position, velocity, player_cfg)
 
         # Create enemy spawner
-        spawner_entity = self.create_entity()
-        spawner_components = create_enemy_components(level_cfg["enemy_spawn_events"], enemies_cfg)
-        for c_type, component in spawner_components.items():
-            self.add_component(spawner_entity, component)
+        self.prefab_creator.create_enemy_spawner()
 
     def _calculate_time(self):
         self.delta_time = self.clock.tick(self.fps) / 1000.0
@@ -101,11 +92,11 @@ class GameEngine:
         # Actualizar sistemas
         system_input(self)
         system_movement(self.entities, self.width, self.height, self.delta_time)
-        system_collision(self.entities)
+        system_collision(self.entities, self.prefab_creator)
         system_animation(self.entities, self.delta_time)
         system_hunter(self.entities, self.player_entity, self.delta_time)
         system_explosion(self.entities, self.delta_time)
-        system_enemy_spawner(self, self.delta_time)
+        system_enemy_spawner(self, self.prefab_creator, self.delta_time)
         
         # Renderizar
         self._render()
@@ -132,7 +123,7 @@ class GameEngine:
 
     def create_entity(self):
         entity = len(self.entities)
-        self.entities[entity] = {}  # Cambiado de append a asignación directa
+        self.entities[entity] = {}
         return entity
 
     def add_component(self, entity, component):

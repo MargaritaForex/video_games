@@ -1,5 +1,4 @@
 # src/ecs/entities/factory.py
-from src.ecs.components.CBullet import CBullet
 from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CVelocity import CVelocity
 from src.ecs.components.CEnemySpawner import CEnemySpawner

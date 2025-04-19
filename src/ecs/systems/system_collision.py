@@ -1,29 +1,28 @@
-from src.ecs.components.CPosition import CPosition
+from src.ecs.components.CTransform import CTransform
 from src.ecs.components.CSurface import CSurface
 from src.ecs.components.CHealth import CHealth
-from src.ecs.components.CExplosion import CExplosion
-from src.ecs.entities.factory import create_explosion
+from src.create.prefab_creator import PrefabCreator
 
-def system_collision(world):
-    # Obtener todas las entidades con posición y superficie
+def system_collision(world, prefab_creator: PrefabCreator):
+    # Obtener todas las entidades con transform y superficie
     entities = []
     for entity_id, components in world.items():
-        pos = components.get(CPosition)
+        transform = components.get(CTransform)
         surface = components.get(CSurface)
-        if pos and surface:
-            entities.append((entity_id, pos, surface))
+        if transform and surface:
+            entities.append((entity_id, transform, surface))
     
     # Verificar colisiones entre pares de entidades
-    for i, (entity1_id, pos1, surface1) in enumerate(entities):
-        for entity2_id, pos2, surface2 in entities[i+1:]:
+    for i, (entity1_id, transform1, surface1) in enumerate(entities):
+        for entity2_id, transform2, surface2 in entities[i+1:]:
             # Verificar colisión usando rectángulos
             rect1 = surface1.area.copy()
-            rect1.x = pos1.x
-            rect1.y = pos1.y
+            rect1.x = transform1.pos.x
+            rect1.y = transform1.pos.y
             
             rect2 = surface2.area.copy()
-            rect2.x = pos2.x
-            rect2.y = pos2.y
+            rect2.x = transform2.pos.x
+            rect2.y = transform2.pos.y
             
             if rect1.colliderect(rect2):
                 # Reducir salud de ambas entidades
@@ -36,9 +35,9 @@ def system_collision(world):
                     health2.current -= 1
                 
                 # Crear explosión en el punto de colisión
-                mid_x = (pos1.x + pos2.x) / 2
-                mid_y = (pos1.y + pos2.y) / 2
-                create_explosion(world, {"x": mid_x, "y": mid_y})
+                mid_x = (transform1.pos.x + transform2.pos.x) / 2
+                mid_y = (transform1.pos.y + transform2.pos.y) / 2
+                prefab_creator.create_explosion({"x": mid_x, "y": mid_y})
                 
                 # Eliminar entidades si su salud llega a 0
                 if health1 and health1.current <= 0:
