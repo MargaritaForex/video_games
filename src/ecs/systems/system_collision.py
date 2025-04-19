@@ -27,6 +27,9 @@ def system_collision(world, prefab_creator: PrefabCreator):
             if rect1.colliderect(rect2):
                 # Reducir salud de ambas entidades
                 health1 = world[entity1_id].get(CHealth)
+                if entity2_id not in world:
+                    continue  # O loguea algo si necesitas saber
+
                 health2 = world[entity2_id].get(CHealth)
                 
                 if health1:
