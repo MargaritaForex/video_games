@@ -1,30 +1,30 @@
 import pygame
 from src.ecs.components.CVelocity import CVelocity
 
+PLAYER_SPEED = 200
+
 def system_input(engine):
-    # Obtener el jugador
+    """Actualiza la velocidad del jugador en función de las teclas presionadas."""
     player_components = engine.entities.get(engine.player_entity)
     if not player_components:
         return
-        
-    # Obtener la velocidad del jugador
+
     velocity = player_components.get(CVelocity)
     if not velocity:
         return
-        
-    # Resetear velocidad
+
+    # Reiniciar velocidad a cero antes de aplicar dirección
     velocity.vx = 0
     velocity.vy = 0
-    
-    # Obtener teclas presionadas
+
     keys = pygame.key.get_pressed()
-    
-    # Mover jugador
+
     if keys[pygame.K_LEFT]:
-        velocity.vx = -200
-    if keys[pygame.K_RIGHT]:
-        velocity.vx = 200
+        velocity.vx = -PLAYER_SPEED
+    elif keys[pygame.K_RIGHT]:
+        velocity.vx = PLAYER_SPEED
+
     if keys[pygame.K_UP]:
-        velocity.vy = -200
-    if keys[pygame.K_DOWN]:
-        velocity.vy = 200 
+        velocity.vy = -PLAYER_SPEED
+    elif keys[pygame.K_DOWN]:
+        velocity.vy = PLAYER_SPEED

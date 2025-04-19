@@ -2,7 +2,6 @@ import os
 import json
 import pygame
 from src.ecs.constants import VELOCITY_X, VELOCITY_Y
-
 from src.ecs.systems.system_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.system_movement import system_movement
 from src.ecs.systems.system_render import system_render
@@ -34,27 +33,38 @@ class GameEngine:
 
     def run(self) -> None:
         self._create()
+        self._game_loop()
+        self._clean()
+
+    def _game_loop(self):
         self.is_running = True
         while self.is_running:
             self._calculate_time()
             self._process_events()
             self._update()
             self._render()
-        self._clean()
+
+    def _load_configs(self):
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "cfg"))
+        with open(os.path.join(base_path, "window.json"), "r") as f:
+            return {
+                "window_cfg": json.load(f)["window"],
+                "level_cfg": json.load(open(os.path.join(base_path, "level_01.json"))),
+                "player_cfg": json.load(open(os.path.join(base_path, "player.json"))),
+                "bullet_cfg": json.load(open(os.path.join(base_path, "bullet.json"))),
+            }
 
     def _create(self):
-        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "assets", "cfg"))
+        configs = self._load_configs()
+        window_cfg = configs["window_cfg"]
+        level_cfg = configs["level_cfg"]
+        player_cfg = configs["player_cfg"]
+        self.bullet_cfg = configs["bullet_cfg"]
 
-        with open(os.path.join(base_path, "window.json"), "r") as f:
-            window_cfg = json.load(f)["window"]
-        with open(os.path.join(base_path, "level_01.json"), "r") as f:
-            level_cfg = json.load(f)
+        # Guardar posición de respawn
         self.player_spawn_position = level_cfg["player_spawn"]["position"]
-        with open(os.path.join(base_path, "player.json"), "r") as f:
-            player_cfg = json.load(f)
-        with open(os.path.join(base_path, "bullet.json"), "r") as f:
-            self.bullet_cfg = json.load(f)
 
+        # Configuración de ventana
         self.width = window_cfg["size"]["w"]
         self.height = window_cfg["size"]["h"]
         self.bg_color = (
@@ -69,13 +79,15 @@ class GameEngine:
         pygame.display.set_caption(window_cfg["title"])
         self.clock = pygame.time.Clock()
 
-        # Create player
-        player_position = level_cfg["player_spawn"]["position"]
+        # Crear jugador
         velocity = {VELOCITY_X: 0, VELOCITY_Y: 0}
-        self.player_entity = self.prefab_creator.create_player(player_position, velocity, player_cfg)
+        self.player_entity = self.prefab_creator.create_player(
+            self.player_spawn_position, velocity, player_cfg
+        )
 
-        # Create enemy spawner
+        # Crear generador de enemigos
         self.prefab_creator.create_enemy_spawner()
+
 
     def _calculate_time(self):
         self.delta_time = self.clock.tick(self.fps) / 1000.0

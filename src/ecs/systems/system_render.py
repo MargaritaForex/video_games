@@ -4,7 +4,8 @@ from src.ecs.components.CSurface import CSurface
 
 
 def system_render(world, screen):
-    for entity_id, components in world.items():
+    """Dibuja todas las entidades que tengan posición y superficie en pantalla."""
+    for _, components in world.items():
         pos = components.get(CPosition)
         surface = components.get(CSurface)
 
