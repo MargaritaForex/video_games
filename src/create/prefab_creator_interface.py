@@ -24,4 +24,8 @@ class IPrefabCreator(ABC):
 
     @abstractmethod
     def create_bullet(self, position: Dict[str, float]) -> int:
-        pass 
+        pass
+
+    @abstractmethod
+    def get_default_player_cfg(self):
+        pass

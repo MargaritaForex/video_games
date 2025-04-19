@@ -217,4 +217,10 @@ class PrefabCreator(IPrefabCreator):
             CVelocity(self._bullet_data["velocity"]["vx"],
                      self._bullet_data["velocity"]["vy"]))
         
-        return bullet_ent 
+        return bullet_ent
+
+    def get_default_player_cfg(self):
+        try:
+            return self._resource_manager.load_config("player.json")
+        except ResourceError:
+            return self._resource_manager.get_default_config("player")

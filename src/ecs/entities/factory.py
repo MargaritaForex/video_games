@@ -31,25 +31,6 @@ def get_image_path(image_name):
     # Construir la ruta completa de la imagen
     return os.path.join(base_path, "assets", "img", image_name)
 
-def create_player(world, pos, vel, cfg):
-    entity = world.create_entity()
-    
-    # Crear componentes básicos
-    world.add_component(entity, CPosition(pos["x"], pos["y"]))
-    world.add_component(entity, CVelocity(vel["vx"], vel["vy"]))
-    
-    # Crear sprite y animación
-    image_path = get_image_path(cfg["image"])
-    world.add_component(entity, CSurface(image_path))
-    
-    if "animations" in cfg:
-        world.add_component(entity, CAnimation(
-            num_frames=cfg["num_frames"],
-            animations=cfg["animations"]
-        ))
-        
-    return entity
-
 def create_bullet(world, pos, cfg):
     entity = world.create_entity()
     

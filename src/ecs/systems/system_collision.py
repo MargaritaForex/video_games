@@ -31,13 +31,7 @@ def system_collision(world, prefab_creator: PrefabCreator):
                 def delete_and_respawn_if_player(entity_id):
                     if entity_id == engine.player_entity:
                         del world[entity_id]
-                        player_cfg = {
-                            "image": "assets/img/player.png",
-                            "animation": {
-                                "total_frames": 4,
-                                "frame_rate": 10
-                            }
-                        }
+                        player_cfg = prefab_creator.get_default_player_cfg()
                         engine.player_entity = engine.prefab_creator.create_player(
                             engine.player_spawn_position,
                             {"vx": 0, "vy": 0},
