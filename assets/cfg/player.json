@@ -1,26 +1,21 @@
 {
-    "size": {
-        "w": 32,
-        "h": 32
-    },
-    "color": {
-        "r": 0,
-        "g": 255,
-        "b": 0
-    },
-    "input_velocity": 100,
-    "image": "player.png",
-    "num_frames": 4,
+    "image": "assets/img/player.png",
     "animations": {
-        "IDLE": {
-            "start_frame": 0,
-            "end_frame": 0,
-            "framerate": 1
-        },
-        "MOVE": {
-            "start_frame": 0,
-            "end_frame": 3,
-            "framerate": 8
-        }
-    }
+        "number_frames": 4,
+        "list": [
+            {
+                "name": "MOVE",
+                "start": 0,
+                "end": 3,
+                "framerate": 10
+            },
+            {
+                "name": "IDLE",
+                "start": 0,
+                "end": 0,
+                "framerate": 1
+            }
+        ]
+    },
+    "input_velocity": 100
 }

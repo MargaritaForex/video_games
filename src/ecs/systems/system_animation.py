@@ -11,5 +11,5 @@ def system_animation(world, delta_time: float):
             surface = components.get(CSurface)
             if surface:
                 current_frame = animation.get_current_frame()
-                frame_width = surface.area.width // animation.total_frames
+                frame_width = surface.area.width // animation.num_frames
                 surface.area.x = current_frame * frame_width 

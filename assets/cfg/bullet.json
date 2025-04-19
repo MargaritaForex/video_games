@@ -1,8 +1,4 @@
 {
-    "image": "bullet.png",
-    "health": 1,
-    "velocity": {
-        "vx": 0,
-        "vy": -300
-    }
+    "image": "assets/img/bullet.png",
+    "velocity": 200
 }

@@ -32,7 +32,7 @@ class PrefabCreator(IPrefabCreator):
         try:
             self._spawner_data = self._resource_manager.load_config("enemy_spawner.json")
         except ResourceError:
-            self._spawner_data = {"spawn_points": [], "enemy_spawn_events": []}
+            self._spawner_data = {"spawn_points": []}
             
         try:
             self._bullet_data = self._resource_manager.load_config("bullet.json")
@@ -75,8 +75,9 @@ class PrefabCreator(IPrefabCreator):
                     "framerate": anim_cfg["frame_rate"]
                 }
             }
-            self._entity_manager.add_component(player_ent,
-                CAnimation(anim_cfg["total_frames"], animations))
+            animation = CAnimation(anim_cfg["total_frames"], animations)
+            animation.set_animation("default")
+            self._entity_manager.add_component(player_ent, animation)
         
         return player_ent
 
@@ -156,9 +157,17 @@ class PrefabCreator(IPrefabCreator):
     def create_enemy_spawner(self) -> int:
         spawner_ent = self._entity_manager.create_entity()
         
+        # Convertir los spawn_points al formato esperado por el sistema
+        level_data = []
+        for spawn_point in self._spawner_data["spawn_points"]:
+            level_data.append({
+                "time": spawn_point["time"],
+                "position": spawn_point["position"],
+                "enemy_type": spawn_point["enemy_type"]
+            })
+        
         self._entity_manager.add_component(spawner_ent,
-            CEnemySpawner(self._spawner_data["spawn_points"],
-                         self._spawner_data["enemy_spawn_events"]))
+            CEnemySpawner(level_data, self._enemy_data))
         
         return spawner_ent
 
