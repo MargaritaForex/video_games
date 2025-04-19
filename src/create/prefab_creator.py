@@ -43,6 +43,14 @@ class PrefabCreator(IPrefabCreator):
         except ResourceError:
             self._explosion_data = self._resource_manager.get_default_config("explosion")
 
+    def _build_surface_with_animation_area(self, image, num_frames):
+        import pygame
+        frame_width = image.get_width() // num_frames
+        frame_height = image.get_height()
+        surface = CSurface(image)
+        surface.area = pygame.Rect(0, 0, frame_width, frame_height)
+        return surface
+
     def create_player(self, position: Dict[str, float], velocity: Dict[str, float], player_cfg: Dict) -> int:
         required_keys = ["image", "health"]
         if not all(key in player_cfg for key in required_keys):
@@ -52,11 +60,23 @@ class PrefabCreator(IPrefabCreator):
         
         try:
             image = self._resource_manager.load_image(player_cfg["image"])
-            self._entity_manager.add_component(player_ent, CSurface(image))
+            if "animation" in player_cfg:
+                anim_cfg = player_cfg["animation"]
+                surface = self._build_surface_with_animation_area(image, anim_cfg["total_frames"])
+            else:
+                surface = CSurface(image)
+
+            self._entity_manager.add_component(player_ent, surface)
         except ResourceError:
             print(f"Warning: Could not load player image. Using default.")
             image = self._resource_manager.load_image("player.png")
-            self._entity_manager.add_component(player_ent, CSurface(image))
+            if "animation" in player_cfg:
+                anim_cfg = player_cfg["animation"]
+                surface = self._build_surface_with_animation_area(image, anim_cfg["total_frames"])
+            else:
+                surface = CSurface(image)
+
+            self._entity_manager.add_component(player_ent, surface)
             
         self._entity_manager.add_component(player_ent,
             CPosition(position["x"], position["y"]))
@@ -224,3 +244,4 @@ class PrefabCreator(IPrefabCreator):
             return self._resource_manager.load_config("player.json")
         except ResourceError:
             return self._resource_manager.get_default_config("player")
+
