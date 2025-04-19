@@ -54,17 +54,7 @@ class GameEngine:
                 "bullet_cfg": json.load(open(os.path.join(base_path, "bullet.json"))),
             }
 
-    def _create(self):
-        configs = self._load_configs()
-        window_cfg = configs["window_cfg"]
-        level_cfg = configs["level_cfg"]
-        player_cfg = configs["player_cfg"]
-        self.bullet_cfg = configs["bullet_cfg"]
-
-        # Guardar posición de respawn
-        self.player_spawn_position = level_cfg["player_spawn"]["position"]
-
-        # Configuración de ventana
+    def _setup_window(self, window_cfg):
         self.width = window_cfg["size"]["w"]
         self.height = window_cfg["size"]["h"]
         self.bg_color = (
@@ -78,6 +68,19 @@ class GameEngine:
         self.screen = pygame.display.set_mode((self.width, self.height))
         pygame.display.set_caption(window_cfg["title"])
         self.clock = pygame.time.Clock()
+
+    def _create(self):
+        configs = self._load_configs()
+        window_cfg = configs["window_cfg"]
+        level_cfg = configs["level_cfg"]
+        player_cfg = configs["player_cfg"]
+        self.bullet_cfg = configs["bullet_cfg"]
+
+        # Configuración de ventana
+        self._setup_window(window_cfg)
+
+        # Guardar posición de respawn
+        self.player_spawn_position = level_cfg["player_spawn"]["position"]
 
         # Crear jugador
         velocity = {VELOCITY_X: 0, VELOCITY_Y: 0}
@@ -108,9 +111,6 @@ class GameEngine:
         system_hunter(self.entities, self.player_entity, self.delta_time)
         system_explosion(self.entities, self.delta_time)
         system_enemy_spawner(self, self.prefab_creator, self.delta_time)
-        
-        # Renderizar
-        self._render()
 
     def _render(self):
         self.screen.fill(self.bg_color)
@@ -133,8 +133,4 @@ class GameEngine:
         return self.entities[entity].get(component_type)
 
     def get_entities_with_components(self, *component_types):
-        result = []
-        for entity_id, components in self.entities.items():
-            if all(ct in components for ct in component_types):
-                result.append(entity_id)
-        return result
+        return [eid for eid, comps in self.entities.items() if all(ct in comps for ct in component_types)]
