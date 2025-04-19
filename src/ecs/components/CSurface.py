@@ -1,5 +1,4 @@
 import pygame
-from src.ecs.resources.resource_manager import ResourceManager
 
 class CSurface:
     def __init__(self, image: pygame.Surface):
