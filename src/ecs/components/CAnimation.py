@@ -5,6 +5,7 @@ class Animation:
         self.framerate = framerate
         self.current_frame = start_frame
         self.time_since_last_frame = 0.0
+        self.finished = False  # 👈 ESTO ES LO QUE FALTABA
 
 class CAnimation:
     def __init__(self, num_frames: int, animations: dict):
@@ -32,4 +33,7 @@ class CAnimation:
                     self.current_animation.current_frame = self.current_animation.start_frame
                     
     def get_current_frame(self) -> int:
-        return self.current_animation.current_frame if self.current_animation else 0 
+        return self.current_animation.current_frame if self.current_animation else 0
+
+    def is_done(self) -> bool:
+        return self.current_animation.finished if self.current_animation else False

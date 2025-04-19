@@ -16,6 +16,7 @@ from src.ecs.components.CHealth import CHealth
 
 class GameEngine:
     def __init__(self) -> None:
+        self.player_spawn_position = None
         self.is_running = False
         self.screen = None
         self.clock = None
@@ -49,6 +50,7 @@ class GameEngine:
             window_cfg = json.load(f)["window"]
         with open(os.path.join(base_path, "level_01.json"), "r") as f:
             level_cfg = json.load(f)
+        self.player_spawn_position = level_cfg["player_spawn"]["position"]
         with open(os.path.join(base_path, "player.json"), "r") as f:
             player_cfg = json.load(f)
         with open(os.path.join(base_path, "bullet.json"), "r") as f:
