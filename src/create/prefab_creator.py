@@ -68,8 +68,15 @@ class PrefabCreator(IPrefabCreator):
         
         if "animation" in player_cfg:
             anim_cfg = player_cfg["animation"]
+            animations = {
+                "default": {
+                    "start_frame": 0,
+                    "end_frame": anim_cfg["total_frames"] - 1,
+                    "framerate": anim_cfg["frame_rate"]
+                }
+            }
             self._entity_manager.add_component(player_ent,
-                CAnimation(anim_cfg["total_frames"], anim_cfg["frame_rate"]))
+                CAnimation(anim_cfg["total_frames"], animations))
         
         return player_ent
 
@@ -87,7 +94,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(enemy_ent, CSurface(image))
         except ResourceError:
             print(f"Warning: Could not load enemy image. Using default.")
-            image = self._resource_manager.load_image("enemy_a.png")
+            image = self._resource_manager.load_image("enemy.png")
             self._entity_manager.add_component(enemy_ent, CSurface(image))
             
         self._entity_manager.add_component(enemy_ent,
@@ -99,8 +106,15 @@ class PrefabCreator(IPrefabCreator):
         
         if "animation" in enemy_cfg:
             anim_cfg = enemy_cfg["animation"]
+            animations = {
+                "default": {
+                    "start_frame": 0,
+                    "end_frame": anim_cfg["total_frames"] - 1,
+                    "framerate": anim_cfg["frame_rate"]
+                }
+            }
             self._entity_manager.add_component(enemy_ent,
-                CAnimation(anim_cfg["total_frames"], anim_cfg["frame_rate"]))
+                CAnimation(anim_cfg["total_frames"], animations))
         
         return enemy_ent
 
@@ -112,7 +126,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(hunter_ent, CSurface(image))
         except ResourceError:
             print(f"Warning: Could not load hunter image. Using default.")
-            image = self._resource_manager.load_image("hunter.png")
+            image = self._resource_manager.load_image("enemy.png")
             self._entity_manager.add_component(hunter_ent, CSurface(image))
             
         self._entity_manager.add_component(hunter_ent,
@@ -127,8 +141,15 @@ class PrefabCreator(IPrefabCreator):
         
         if "animation" in self._hunter_data:
             anim_cfg = self._hunter_data["animation"]
+            animations = {
+                "default": {
+                    "start_frame": 0,
+                    "end_frame": anim_cfg["total_frames"] - 1,
+                    "framerate": anim_cfg["frame_rate"]
+                }
+            }
             self._entity_manager.add_component(hunter_ent,
-                CAnimation(anim_cfg["total_frames"], anim_cfg["frame_rate"]))
+                CAnimation(anim_cfg["total_frames"], animations))
         
         return hunter_ent
 
@@ -154,9 +175,18 @@ class PrefabCreator(IPrefabCreator):
             
         self._entity_manager.add_component(explosion_ent,
             CTransform(position["x"], position["y"]))
-        self._entity_manager.add_component(explosion_ent,
-            CAnimation(self._explosion_data["animation"]["total_frames"],
-                      self._explosion_data["animation"]["frame_rate"]))
+        
+        if "animation" in self._explosion_data:
+            anim_cfg = self._explosion_data["animation"]
+            animations = {
+                "default": {
+                    "start_frame": 0,
+                    "end_frame": anim_cfg["total_frames"] - 1,
+                    "framerate": anim_cfg["frame_rate"]
+                }
+            }
+            self._entity_manager.add_component(explosion_ent,
+                CAnimation(anim_cfg["total_frames"], animations))
         
         return explosion_ent
 

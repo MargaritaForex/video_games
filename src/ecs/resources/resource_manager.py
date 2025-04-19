@@ -9,11 +9,19 @@ class ResourceError(Exception):
 class ResourceManager:
     def __init__(self):
         # La ruta base debe apuntar al directorio raíz del proyecto
-        self.base_path = Path(__file__).parent.parent.parent.parent.parent
+        # Primero subimos hasta src, luego hasta PROYECTO_VACIO
+        self.base_path = Path(__file__).parent.parent.parent.parent
         self.assets_path = self.base_path / "assets"
+        print(f"Base path: {self.base_path}")
+        print(f"Assets path: {self.assets_path}")
+        print(f"Assets exists: {self.assets_path.exists()}")
+        print(f"Img path: {self.assets_path / 'img'}")
+        print(f"Img exists: {(self.assets_path / 'img').exists()}")
         
     def load_image(self, image_name: str) -> pygame.Surface:
         path = self.assets_path / "img" / image_name
+        print(f"Trying to load image from: {path}")
+        print(f"Image exists: {path.exists()}")
         if not path.exists():
             raise ResourceError(f"Image not found: {image_name}")
         return pygame.image.load(str(path)).convert_alpha()
