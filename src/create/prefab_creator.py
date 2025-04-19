@@ -4,7 +4,7 @@ from typing import Dict
 
 from src.ecs.components.CAnimation import CAnimation
 from src.ecs.components.CSurface import CSurface
-from src.ecs.components.CTransform import CTransform
+from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CVelocity import CVelocity
 from src.ecs.components.CEnemySpawner import CEnemySpawner
 from src.ecs.components.CHunter import CHunter
@@ -60,7 +60,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(player_ent, CSurface(image))
             
         self._entity_manager.add_component(player_ent,
-            CTransform(position["x"], position["y"]))
+            CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(player_ent,
             CVelocity(velocity["vx"], velocity["vy"]))
         self._entity_manager.add_component(player_ent,
@@ -99,7 +99,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(enemy_ent, CSurface(image))
             
         self._entity_manager.add_component(enemy_ent,
-            CTransform(position["x"], position["y"]))
+            CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(enemy_ent,
             CVelocity(enemy_cfg["velocity"]["vx"], enemy_cfg["velocity"]["vy"]))
         self._entity_manager.add_component(enemy_ent,
@@ -131,7 +131,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(hunter_ent, CSurface(image))
             
         self._entity_manager.add_component(hunter_ent,
-            CTransform(position["x"], position["y"]))
+            CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(hunter_ent,
             CVelocity(self._hunter_data["velocity"]["vx"], 
                      self._hunter_data["velocity"]["vy"]))
@@ -183,7 +183,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(explosion_ent, CSurface(image))
             
         self._entity_manager.add_component(explosion_ent,
-            CTransform(position["x"], position["y"]))
+            CPosition(position["x"], position["y"]))
         
         if "animation" in self._explosion_data:
             anim_cfg = self._explosion_data["animation"]
@@ -211,7 +211,7 @@ class PrefabCreator(IPrefabCreator):
             self._entity_manager.add_component(bullet_ent, CSurface(image))
             
         self._entity_manager.add_component(bullet_ent,
-            CTransform(position["x"], position["y"]))
+            CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(bullet_ent,
             CVelocity(self._bullet_data["velocity"]["vx"],
                      self._bullet_data["velocity"]["vy"]))

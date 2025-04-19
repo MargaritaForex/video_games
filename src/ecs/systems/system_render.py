@@ -9,10 +9,9 @@ def system_render(world, screen):
         surface = components.get(CSurface)
 
         if pos and surface:
-            # Si hay área (para sprite sheet), úsala
-            if surface.area:
-                screen.blit(surface.surface, (pos.x, pos.y), surface.area)
-            else:
-                screen.blit(surface.surface, (pos.x, pos.y))
+            print(f"Renderizando entidad {entity_id} en posición ({pos.x}, {pos.y})")
+            screen.blit(surface.surface, (pos.x, pos.y))
+        else:
+            print(f"Entidad {entity_id} sin CPosition o CSurface")
 
 
