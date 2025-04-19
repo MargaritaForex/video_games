@@ -173,7 +173,7 @@ class PrefabCreator(IPrefabCreator):
 
     def create_explosion(self, position: Dict[str, float]) -> int:
         explosion_ent = self._entity_manager.create_entity()
-        
+
         try:
             image = self._resource_manager.load_image(self._explosion_data["image"])
             self._entity_manager.add_component(explosion_ent, CSurface(image))
@@ -181,22 +181,30 @@ class PrefabCreator(IPrefabCreator):
             print(f"Warning: Could not load explosion image. Using default.")
             image = self._resource_manager.load_image("explosion.png")
             self._entity_manager.add_component(explosion_ent, CSurface(image))
-            
+
         self._entity_manager.add_component(explosion_ent,
-            CPosition(position["x"], position["y"]))
-        
-        if "animation" in self._explosion_data:
-            anim_cfg = self._explosion_data["animation"]
-            animations = {
-                "default": {
-                    "start_frame": 0,
-                    "end_frame": anim_cfg["total_frames"] - 1,
-                    "framerate": anim_cfg["frame_rate"]
+                                           CPosition(position["x"], position["y"]))
+
+        # ➕ Agregamos el componente de explosión
+        from src.ecs.components.CExplosion import CExplosion
+        self._entity_manager.add_component(explosion_ent, CExplosion(0.5))  # o el valor que consideres
+
+        try:
+            num_frames = self._explosion_data["animations"]["number_frames"]
+            anim_list = self._explosion_data["animations"]["list"]
+            animations = {}
+            for anim in anim_list:
+                animations[anim["name"]] = {
+                    "start_frame": anim["start"],
+                    "end_frame": anim["end"],
+                    "framerate": anim["framerate"]
                 }
-            }
-            self._entity_manager.add_component(explosion_ent,
-                CAnimation(anim_cfg["total_frames"], animations))
-        
+            animation = CAnimation(num_frames, animations)
+            animation.set_animation("EXPLODE")  # Asegúrate que "EXPLODE" esté en tu JSON
+            self._entity_manager.add_component(explosion_ent, animation)
+        except Exception as e:
+            print(f"Error loading explosion animation: {e}")
+
         return explosion_ent
 
     def create_bullet(self, position: Dict[str, float]) -> int:

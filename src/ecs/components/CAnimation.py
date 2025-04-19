@@ -24,11 +24,11 @@ class CAnimation:
         if self.current_animation:
             self.current_animation.time_since_last_frame += delta_time
             frame_duration = 1.0 / self.current_animation.framerate
-            
+
             if self.current_animation.time_since_last_frame >= frame_duration:
                 self.current_animation.time_since_last_frame = 0.0
                 self.current_animation.current_frame += 1
-                
+
                 if self.current_animation.current_frame > self.current_animation.end_frame:
                     self.current_animation.current_frame = self.current_animation.start_frame
                     
@@ -36,4 +36,6 @@ class CAnimation:
         return self.current_animation.current_frame if self.current_animation else 0
 
     def is_done(self) -> bool:
-        return self.current_animation.finished if self.current_animation else False
+        if not self.current_animation:
+            return False
+        return self.current_animation.current_frame == self.current_animation.end_frame
