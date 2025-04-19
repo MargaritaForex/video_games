@@ -2,11 +2,6 @@
 from src.ecs.components.CEnemySpawner import CEnemySpawner
 from src.create.prefab_creator import PrefabCreator
 
-
-# src/ecs/systems/system_enemy_spawner.py
-from src.ecs.components.CEnemySpawner import CEnemySpawner
-from src.create.prefab_creator import PrefabCreator
-
 def system_enemy_spawner(engine, prefab_creator: PrefabCreator, delta_time):
     entity_ids = list(engine.entities.keys())  # 👈 Hacemos una copia
     for entity_id in entity_ids:

@@ -9,9 +9,14 @@ def system_animation(world, delta_time: float):
         if animation:
             animation.update(delta_time)
 
+            # Actualizar el área del sprite según el frame actual
             surface = components.get(CSurface)
             if surface:
-                frame_width = surface.surface.get_width() // animation.num_frames
-                frame_height = surface.surface.get_height()
-                surface.area = pygame.Rect(0, 0, frame_width, frame_height)
+                current_frame = animation.get_current_frame()
+                full_width = surface.surface.get_width()
+                height = surface.surface.get_height()
+
+                frame_width = full_width // animation.num_frames
+                surface.area = pygame.Rect(current_frame * frame_width, 0, frame_width, height)
+
 
