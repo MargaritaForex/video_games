@@ -9,6 +9,6 @@ def system_render(world, screen):
         surface = components.get(CSurface)
 
         if pos and surface:
-            screen.blit(surface.surface, (pos.x, pos.y))
+            screen.blit(surface.surface, (pos.x, pos.y), surface.area)
 
 

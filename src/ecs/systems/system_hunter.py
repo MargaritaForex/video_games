@@ -5,6 +5,8 @@ from src.ecs.components.CHunter import CHunter
 from src.ecs.components.CAnimation import CAnimation
 
 def system_hunter(world, player_entity, delta_time: float):
+    if player_entity not in world:
+        return
     player_pos = world[player_entity].get(CPosition)
     if not player_pos:
         return

@@ -1,6 +1,5 @@
 import pygame
 from src.ecs.components.CVelocity import CVelocity
-from src.ecs.constants import VELOCITY_X, VELOCITY_Y
 
 def system_input(engine):
     # Obtener el jugador

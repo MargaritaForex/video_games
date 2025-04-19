@@ -6,7 +6,6 @@ from src.ecs.constants import VELOCITY_X, VELOCITY_Y
 from src.ecs.systems.system_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.system_movement import system_movement
 from src.ecs.systems.system_render import system_render
-from src.ecs.systems.system_bullet_spawn import BulletSpawner
 from src.ecs.systems.system_input import system_input
 from src.ecs.systems.system_collision import system_collision
 from src.ecs.systems.system_animation import system_animation
@@ -31,7 +30,6 @@ class GameEngine:
         self.entities = {}
         self.player_entity = None
         self.bullet_cfg = None
-        self.bullet_spawner = BulletSpawner()
         self.prefab_creator = PrefabCreator(self)
 
     def run(self) -> None:

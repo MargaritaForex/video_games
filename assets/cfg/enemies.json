@@ -1,30 +1,30 @@
 {
     "TypeA": {
-        "image": "asteroid_01.png",
+        "image": "assets/img/asteroid_01.png",
         "health": 1,
         "velocity_min": 50,
         "velocity_max": 100
     },
     "TypeB": {
-        "image": "asteroid_02.png",
+        "image": "assets/img/asteroid_02.png",
         "health": 2,
         "velocity_min": 75,
         "velocity_max": 125
     },
     "TypeC": {
-        "image": "asteroid_03.png",
+        "image": "assets/img/asteroid_03.png",
         "health": 3,
         "velocity_min": 100,
         "velocity_max": 150
     },
     "TypeD": {
-        "image": "asteroid_04.png",
+        "image": "assets/img/asteroid_04.png",
         "health": 4,
         "velocity_min": 125,
         "velocity_max": 175
     },
     "Hunter": {
-        "image": "enemy.png",
+        "image": "assets/img/enemy.png",
         "num_frames": 4,
         "animations": {
             "IDLE": {
