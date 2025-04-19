@@ -104,11 +104,6 @@ class GameEngine:
         self.screen.fill(self.bg_color)
         system_render(self.entities, self.screen)
 
-        # Renderizar score (si lo necesitas)
-        font = pygame.font.Font(None, 36)
-        score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
-        self.screen.blit(score_text, (10, 10))
-
         pygame.display.flip()
 
     def _clean(self):
