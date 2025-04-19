@@ -12,7 +12,6 @@ from src.ecs.systems.system_animation import system_animation
 from src.ecs.systems.system_hunter import system_hunter
 from src.ecs.systems.system_explosion import system_explosion
 from src.create.prefab_creator import PrefabCreator
-from src.ecs.components.CHealth import CHealth
 
 class GameEngine:
     def __init__(self) -> None:
@@ -105,17 +104,10 @@ class GameEngine:
         self.screen.fill(self.bg_color)
         system_render(self.entities, self.screen)
 
-        # Render score
+        # Renderizar score (si lo necesitas)
         font = pygame.font.Font(None, 36)
         score_text = font.render(f"Score: {self.score}", True, (255, 255, 255))
         self.screen.blit(score_text, (10, 10))
-
-        # 🔐 Verifica que el jugador aún exista
-        if self.player_entity in self.entities:
-            player_health = self.get_component(self.player_entity, CHealth)
-            if player_health:
-                health_text = font.render(f"Health: {player_health.current}", True, (255, 255, 255))
-                self.screen.blit(health_text, (10, 50))
 
         pygame.display.flip()
 

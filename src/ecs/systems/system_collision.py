@@ -1,6 +1,5 @@
 from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CSurface import CSurface
-from src.ecs.components.CHealth import CHealth
 from src.create.prefab_creator import PrefabCreator
 
 def system_collision(world, prefab_creator: PrefabCreator):
@@ -22,38 +21,13 @@ def system_collision(world, prefab_creator: PrefabCreator):
             rect2.y = pos2.y
 
             if rect1.colliderect(rect2):
-                health1 = world[entity1_id].get(CHealth)
-                health2 = world[entity2_id].get(CHealth)
-
-                if health1:
-                    health1.current -= 1
-                if health2:
-                    health2.current -= 1
-
+                # Crear una explosión visual en el punto medio de la colisión
                 mid_x = (pos1.x + pos2.x) / 2
                 mid_y = (pos1.y + pos2.y) / 2
                 prefab_creator.create_explosion({"x": mid_x, "y": mid_y})
 
-                # 🟢 NUEVO: respawn si el jugador muere
-                engine = prefab_creator._entity_manager
-                if health1 and health1.current <= 0:
-                    if entity1_id == engine.player_entity:
-                        del world[entity1_id]
-                        engine.player_entity = engine.prefab_creator.create_player(
-                            engine.player_spawn_position,
-                            { "vx": 0, "vy": 0 },
-                            engine.bullet_cfg  # o player_cfg si tienes acceso
-                        )
-                    else:
-                        del world[entity1_id]
-
-                if health2 and health2.current <= 0:
-                    if entity2_id == engine.player_entity:
-                        del world[entity2_id]
-                        engine.player_entity = engine.prefab_creator.create_player(
-                            engine.player_spawn_position,
-                            { "vx": 0, "vy": 0 },
-                            engine.bullet_cfg  # o player_cfg si tienes acceso
-                        )
-                    else:
-                        del world[entity2_id]
+                # Eliminar las dos entidades al colisionar
+                if entity1_id in world:
+                    del world[entity1_id]
+                if entity2_id in world:
+                    del world[entity2_id]

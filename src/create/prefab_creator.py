@@ -8,7 +8,6 @@ from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CVelocity import CVelocity
 from src.ecs.components.CEnemySpawner import CEnemySpawner
 from src.ecs.components.CHunter import CHunter
-from src.ecs.components.CHealth import CHealth
 from src.create.prefab_creator_interface import IPrefabCreator
 from src.ecs.resources.resource_manager import ResourceManager, ResourceError
 
@@ -63,8 +62,6 @@ class PrefabCreator(IPrefabCreator):
             CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(player_ent,
             CVelocity(velocity["vx"], velocity["vy"]))
-        self._entity_manager.add_component(player_ent,
-            CHealth(player_cfg["health"]))
         
         if "animation" in player_cfg:
             anim_cfg = player_cfg["animation"]
@@ -102,8 +99,6 @@ class PrefabCreator(IPrefabCreator):
             CPosition(position["x"], position["y"]))
         self._entity_manager.add_component(enemy_ent,
             CVelocity(enemy_cfg["velocity"]["vx"], enemy_cfg["velocity"]["vy"]))
-        self._entity_manager.add_component(enemy_ent,
-            CHealth(enemy_cfg["health"]))
         
         if "animation" in enemy_cfg:
             anim_cfg = enemy_cfg["animation"]
@@ -137,8 +132,6 @@ class PrefabCreator(IPrefabCreator):
                      self._hunter_data["velocity"]["vy"]))
         self._entity_manager.add_component(hunter_ent,
             CHunter(self._hunter_data["detection_range"]))
-        self._entity_manager.add_component(hunter_ent,
-            CHealth(self._hunter_data["health"]))
         
         if "animation" in self._hunter_data:
             anim_cfg = self._hunter_data["animation"]
@@ -223,7 +216,5 @@ class PrefabCreator(IPrefabCreator):
         self._entity_manager.add_component(bullet_ent,
             CVelocity(self._bullet_data["velocity"]["vx"],
                      self._bullet_data["velocity"]["vy"]))
-        self._entity_manager.add_component(bullet_ent,
-            CHealth(self._bullet_data["health"]))
         
         return bullet_ent 

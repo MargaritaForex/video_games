@@ -4,9 +4,6 @@ from src.ecs.components.CVelocity import CVelocity
 from src.ecs.components.CEnemySpawner import CEnemySpawner
 from src.ecs.components.CSurface import CSurface
 from src.ecs.components.CAnimation import CAnimation
-from src.ecs.components.CHealth import CHealth
-from src.ecs.components.CHunter import CHunter
-from src.ecs.components.CExplosion import CExplosion
 import random
 import os
 
@@ -16,7 +13,6 @@ def create_enemy(world, pos, cfg):
     # Crear componentes básicos
     world.add_component(entity, CPosition(pos["x"], pos["y"]))
     world.add_component(entity, CVelocity(0, random.randint(cfg["velocity_min"], cfg["velocity_max"])))
-    world.add_component(entity, CHealth(cfg["health"]))
     
     # Crear sprite
     image_path = get_image_path(cfg["image"])
@@ -41,7 +37,6 @@ def create_player(world, pos, vel, cfg):
     # Crear componentes básicos
     world.add_component(entity, CPosition(pos["x"], pos["y"]))
     world.add_component(entity, CVelocity(vel["vx"], vel["vy"]))
-    world.add_component(entity, CHealth(3))
     
     # Crear sprite y animación
     image_path = get_image_path(cfg["image"])
@@ -61,7 +56,6 @@ def create_bullet(world, pos, cfg):
     # Crear componentes básicos
     world.add_component(entity, CPosition(pos.x, pos.y))
     world.add_component(entity, CVelocity(cfg["velocity"]["vx"], cfg["velocity"]["vy"]))
-    world.add_component(entity, CHealth(cfg["health"]))
     
     # Crear sprite
     image_path = get_image_path(cfg["image"])
