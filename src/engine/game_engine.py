@@ -14,8 +14,11 @@ from src.create.prefab_creator import PrefabCreator
 
 class GameEngine:
     def __init__(self) -> None:
+        self.entities = {}
+        self.player_entity = None
         self.player_spawn_position = None
-        self.is_running = False
+        self.bullet_cfg = None
+
         self.screen = None
         self.clock = None
         self.width = 640
@@ -23,12 +26,8 @@ class GameEngine:
         self.bg_color = (0, 0, 0)
         self.fps = 60
         self.delta_time = 0.0
-        self.score = 0
+        self.is_running = False
 
-        # ECS
-        self.entities = {}
-        self.player_entity = None
-        self.bullet_cfg = None
         self.prefab_creator = PrefabCreator(self)
 
     def run(self) -> None:
@@ -70,25 +69,16 @@ class GameEngine:
         self.clock = pygame.time.Clock()
 
     def _create(self):
-        configs = self._load_configs()
-        window_cfg = configs["window_cfg"]
-        level_cfg = configs["level_cfg"]
-        player_cfg = configs["player_cfg"]
-        self.bullet_cfg = configs["bullet_cfg"]
+        cfg = self._load_configs()
+        self._setup_window(cfg["window_cfg"])
 
-        # Configuración de ventana
-        self._setup_window(window_cfg)
+        self.player_spawn_position = cfg["level_cfg"]["player_spawn"]["position"]
+        self.bullet_cfg = cfg["bullet_cfg"]
 
-        # Guardar posición de respawn
-        self.player_spawn_position = level_cfg["player_spawn"]["position"]
-
-        # Crear jugador
         velocity = {VELOCITY_X: 0, VELOCITY_Y: 0}
         self.player_entity = self.prefab_creator.create_player(
-            self.player_spawn_position, velocity, player_cfg
+            self.player_spawn_position, velocity, cfg["player_cfg"]
         )
-
-        # Crear generador de enemigos
         self.prefab_creator.create_enemy_spawner()
 
 
