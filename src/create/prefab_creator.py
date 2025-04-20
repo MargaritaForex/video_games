@@ -256,11 +256,16 @@ class PrefabCreator(IPrefabCreator):
             image = self._resource_manager.load_image("bullet.png")
             self._entity_manager.add_component(bullet_ent, CSurface(image))
 
-        bullet_pos_x = position.x
-        bullet_pos_y = position.y - 40
+        # ✅ Usar el diccionario correctamente
+        bullet_pos_x = position["x"]
+        bullet_pos_y = position["y"] - 40  # Subir un poco más la bala
 
         self._entity_manager.add_component(bullet_ent, CPosition(bullet_pos_x, bullet_pos_y))
+        self._entity_manager.add_component(bullet_ent, CVelocity(0, -300))  # Velocidad hacia arriba
 
-        self._entity_manager.add_component(bullet_ent, CVelocity(0, -300))  # Ajusta la velocidad si quieres
+        # ✅ Asegúrate de agregar CBullet también
+        from src.ecs.components.CBullet import CBullet
+        self._entity_manager.add_component(bullet_ent, CBullet())
 
         return bullet_ent
+

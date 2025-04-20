@@ -1,4 +1,5 @@
 import pygame
+
 from src.ecs.components.CSurface import CSurface
 from src.ecs.components.CPosition import CPosition
 
@@ -17,6 +18,11 @@ def system_mouse_input(engine):
         if surface and position:
             player_rect = surface.area.copy()
             player_rect.topleft = (position.x, position.y)
+
             if player_rect.collidepoint(mouse_pos):
-                # Solo se dispara si se hace clic directamente sobre el jugador
-                engine.prefab_creator.create_bullet(position)
+                # ⚠️ Creamos un nuevo diccionario con coordenadas ligeramente arriba del jugador
+                bullet_spawn_pos = {
+                    "x": position.x,
+                    "y": position.y - 20  # más alto que antes
+                }
+                engine.prefab_creator.create_bullet(bullet_spawn_pos)
