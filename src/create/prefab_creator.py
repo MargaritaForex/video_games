@@ -220,24 +220,6 @@ class PrefabCreator(IPrefabCreator):
 
         return explosion_ent
 
-    def create_bullet(self, position: Dict[str, float]) -> int:
-        bullet_ent = self._entity_manager.create_entity()
-        
-        try:
-            image = self._resource_manager.load_image(self._bullet_data["image"])
-            self._entity_manager.add_component(bullet_ent, CSurface(image))
-        except ResourceError:
-            print(f"Warning: Could not load bullet image. Using default.")
-            image = self._resource_manager.load_image("bullet.png")
-            self._entity_manager.add_component(bullet_ent, CSurface(image))
-            
-        self._entity_manager.add_component(bullet_ent,
-            CPosition(position["x"], position["y"]))
-        self._entity_manager.add_component(bullet_ent,
-            CVelocity(self._bullet_data["velocity"]["vx"],
-                     self._bullet_data["velocity"]["vy"]))
-        
-        return bullet_ent
 
     def get_default_player_cfg(self):
         try:
