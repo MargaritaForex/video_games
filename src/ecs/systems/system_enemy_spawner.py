@@ -1,27 +1,22 @@
-# src/ecs/systems/system_enemy_spawner.py
 from src.ecs.components.CEnemySpawner import CEnemySpawner
 from src.create.prefab_creator import PrefabCreator
 
 def system_enemy_spawner(engine, prefab_creator: PrefabCreator, delta_time):
-    entity_ids = list(engine.entities.keys())  # 👈 Hacemos una copia
-    for entity_id in entity_ids:
-        components = engine.entities[entity_id]
+    """Genera enemigos según los eventos definidos en el nivel."""
+    for entity_id, components in list(engine.entities.items()):
         spawner = components.get(CEnemySpawner)
-        if spawner:
-            spawner.timer += delta_time
-            for idx, spawn_event in enumerate(spawner.level_data):
-                if idx not in spawner.spawned and spawner.timer >= spawn_event["time"]:
-                    enemy_type = spawn_event["enemy_type"]
-                    pos = spawn_event["position"]
+        if not spawner:
+            continue
 
-                    if enemy_type == "Hunter":
-                        prefab_creator.create_hunter(pos)
-                    else:
-                        prefab_creator.create_enemy(pos, enemy_type)
-                        print(f"Creado {enemy_type} en {pos}")
+        spawner.timer += delta_time
+        for idx, spawn_event in enumerate(spawner.level_data):
+            if idx in spawner.spawned or spawner.timer < spawn_event["time"]:
+                continue
 
-                    spawner.spawned.add(idx)
+            pos = spawn_event["position"]
+            if spawn_event["enemy_type"] == "Hunter":
+                prefab_creator.create_hunter(pos)
+            else:
+                prefab_creator.create_enemy(pos, spawn_event["enemy_type"])
 
-
-
-
+            spawner.spawned.add(idx)
