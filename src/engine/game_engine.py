@@ -93,13 +93,26 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
+        from src.ecs.systems.system_bullet_enemy_collision import system_bullet_enemy_collision
+        from src.ecs.systems.system_bullet_boundary import system_bullet_boundary
+
         self.delta_time = self.clock.tick(self.fps) / 1000.0
-        
-        # Actualizar sistemas
+
+        # Entrada
         system_input(self)
         system_mouse_input(self)
+
+        # Movimiento
         system_movement(self.entities, self.width, self.height, self.delta_time)
+
+        # ⚠️ Añade estos dos:
+        system_bullet_enemy_collision(self.entities, self.prefab_creator)
+        system_bullet_boundary(self.entities, self.screen)
+
+        # Colisiones generales
         system_collision(self.entities, self.prefab_creator)
+
+        # Lógica y visual
         system_animation(self.entities, self.delta_time)
         system_hunter(self.entities, self.player_entity, self.delta_time)
         system_explosion(self.entities, self.delta_time)
