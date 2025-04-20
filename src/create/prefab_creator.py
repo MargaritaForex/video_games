@@ -170,20 +170,29 @@ class PrefabCreator(IPrefabCreator):
         return hunter_ent
 
     def create_enemy_spawner(self) -> int:
+        ASTEROID_MAP = {
+            "AsteroidA": "TypeA",
+            "AsteroidB": "TypeB",
+            "AsteroidC": "TypeC",
+            "AsteroidD": "TypeD"
+        }
+
         spawner_ent = self._entity_manager.create_entity()
-        
-        # Convertir los spawn_points al formato esperado por el sistema
+
         level_data = []
         for spawn_point in self._spawner_data["spawn_points"]:
-            level_data.append({
-                "time": spawn_point["time"],
-                "position": spawn_point["position"],
-                "enemy_type": spawn_point["enemy_type"]
-            })
-        
-        self._entity_manager.add_component(spawner_ent,
-            CEnemySpawner(level_data, self._enemy_data))
-        
+            enemy_type = spawn_point["enemy_type"]
+            if enemy_type in ASTEROID_MAP:
+                level_data.append({
+                    "time": spawn_point["time"],
+                    "position": spawn_point["position"],
+                    "enemy_type": ASTEROID_MAP[enemy_type]
+                })
+
+        self._entity_manager.add_component(
+            spawner_ent, CEnemySpawner(level_data, self._enemy_data)
+        )
+
         return spawner_ent
 
     def create_explosion(self, position: Dict[str, float]) -> int:
@@ -229,3 +238,29 @@ class PrefabCreator(IPrefabCreator):
         except ResourceError:
             return self._resource_manager.get_default_config("player")
 
+    def create_initial_static_enemies(self):
+        for spawn_point in self._spawner_data["spawn_points"]:
+            print(f"💡 Analizando spawn: {spawn_point}")  # ← DEBUG
+            if spawn_point["enemy_type"] == "Hunter":
+                print(f"🧠 Creando Hunter en: {spawn_point['position']}")
+                self.create_hunter(spawn_point["position"])
+
+    def create_bullet(self, position: Dict[str, float]) -> int:
+        bullet_ent = self._entity_manager.create_entity()
+
+        try:
+            image = self._resource_manager.load_image(self._bullet_data["image"])
+            self._entity_manager.add_component(bullet_ent, CSurface(image))
+        except ResourceError:
+            print(f"⚠ Warning: Could not load bullet image. Using default.")
+            image = self._resource_manager.load_image("bullet.png")
+            self._entity_manager.add_component(bullet_ent, CSurface(image))
+
+        bullet_pos_x = position.x
+        bullet_pos_y = position.y - 40
+
+        self._entity_manager.add_component(bullet_ent, CPosition(bullet_pos_x, bullet_pos_y))
+
+        self._entity_manager.add_component(bullet_ent, CVelocity(0, -300))  # Ajusta la velocidad si quieres
+
+        return bullet_ent

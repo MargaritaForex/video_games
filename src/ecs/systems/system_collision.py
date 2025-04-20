@@ -1,3 +1,4 @@
+from src.ecs.components.CBullet import CBullet
 from src.ecs.components.CPosition import CPosition
 from src.ecs.components.CSurface import CSurface
 from src.create.prefab_creator import PrefabCreator
@@ -29,10 +30,20 @@ def system_collision(world, prefab_creator: PrefabCreator):
     # Detecta colisiones por pares
     for i, (eid1, pos1, surf1) in enumerate(entities):
         for eid2, pos2, surf2 in entities[i + 1:]:
-            rect1 = surf1.area.copy(); rect1.topleft = (pos1.x, pos1.y)
-            rect2 = surf2.area.copy(); rect2.topleft = (pos2.x, pos2.y)
+            rect1 = surf1.area.copy();
+            rect1.topleft = (pos1.x, pos1.y)
+            rect2 = surf2.area.copy();
+            rect2.topleft = (pos2.x, pos2.y)
 
             if rect1.colliderect(rect2):
+                # 🔒 ⬇️ Aquí va el nuevo chequeo para ignorar colisión entre jugador y su propia bala
+                comps1 = world[eid1]
+                comps2 = world[eid2]
+                if (CBullet in comps1 and eid2 == engine.player_entity) or (
+                        CBullet in comps2 and eid1 == engine.player_entity):
+                    continue  # ⚠️ Ignora esta colisión
+
+                # ✅ Si no son jugador/bala, sí se genera explosión
                 mid_x = (pos1.x + pos2.x) / 2
                 mid_y = (pos1.y + pos2.y) / 2
                 prefab_creator.create_explosion({"x": mid_x, "y": mid_y})

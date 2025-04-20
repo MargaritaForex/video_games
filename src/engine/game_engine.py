@@ -11,6 +11,7 @@ from src.ecs.systems.system_animation import system_animation
 from src.ecs.systems.system_hunter import system_hunter
 from src.ecs.systems.system_explosion import system_explosion
 from src.create.prefab_creator import PrefabCreator
+from src.ecs.systems.system_mouse_input import system_mouse_input
 
 class GameEngine:
     def __init__(self) -> None:
@@ -79,6 +80,7 @@ class GameEngine:
         self.player_entity = self.prefab_creator.create_player(
             self.player_spawn_position, velocity, cfg["player_cfg"]
         )
+        self.prefab_creator.create_initial_static_enemies()
         self.prefab_creator.create_enemy_spawner()
 
 
@@ -95,6 +97,7 @@ class GameEngine:
         
         # Actualizar sistemas
         system_input(self)
+        system_mouse_input(self)
         system_movement(self.entities, self.width, self.height, self.delta_time)
         system_collision(self.entities, self.prefab_creator)
         system_animation(self.entities, self.delta_time)
