@@ -99,6 +99,8 @@ class PrefabCreator(IPrefabCreator):
         return player_ent
 
     def create_enemy(self, position: Dict[str, float], enemy_type: str) -> int:
+        print(f"🧪 Creando enemigo con tipo: {enemy_type}")
+        print(f"✅ Enemigo creado: {enemy_type} en {position}")
         if enemy_type not in self._enemy_data:
             print(f"Warning: Enemy type {enemy_type} not found. Using default.")
             enemy_cfg = self._resource_manager.get_default_config("enemy")["TypeA"]
